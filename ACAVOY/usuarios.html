@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Usuarios - Aca Voy!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+
+    <header class="dashboard-header">
+        <div class="header-logo">
+            <img src="logo.jpeg" alt="Logo Aca Voy!" class="logo-small">
+            <span>Aca Voy!</span>
+        </div>
+        <div class="header-user">
+            <span>Bienvenida, Miri (Administrador)</span>
+            <a href="login.html" class="btn-logout">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <div class="dashboard-main-container">
+
+        <nav class="dashboard-sidebar">
+            <h3>Módulos</h3>
+            <ul>
+                <li><a href="dashboard.html">Dashboard (Inicio)</a></li>
+                <li class="active"><a href="usuarios.html">Gestión de Usuarios</a></li>
+                <li><a href="#">Reportes y Analítica</a></li>
+                <li><a href="#">Ventas</a></li>
+                <li><a href="#">Gestión de Clientes</a></li>
+                <li><a href="#">Inventario</a></li>
+                <li><a href="#">Auditoría y Bitácoras</a></li>
+            </ul>
+        </nav>
+
+        <main class="dashboard-content">
+            <h1>Gestión de Usuarios (MOD-02-PANTALLA-01)</h1>
+            <p>Crear, editar, eliminar y asignar roles a los usuarios del sistema.</p>
+
+            <div class="action-bar">
+                <input type="search" placeholder="Buscar usuario por ID o Nombre..." class="search-bar">
+                <a href="usuario-crear.html" class="btn-primary">Crear Nuevo Usuario</a>
+            </div>
+
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>ID de Usuario</th>
+                        <th>Nombre</th>
+                        <th>Rol Asignado</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>mrobles</td>
+                        <td>Miriam Robles</td>
+                        <td>Administrador</td>
+                        <td><span class="status-badge active">Activo</span></td>
+                        <td>
+                            <a href="usuario-editar.html" class="btn-action edit">Editar</a>
+                            <button class="btn-action delete" onclick="openModal('mrobles', 'Miriam Robles')">Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>vendedor01</td>
+                        <td>Fabian López</td>
+                        <td>Vendedor</td>
+                        <td><span class="status-badge active">Activo</span></td>
+                        <td>
+                            <a href="usuario-editar.html" class="btn-action edit">Editar</a>
+                            <button class="btn-action delete" onclick="openModal('vendedor01', 'Fabian López')">Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>almacen01</td>
+                        <td>Cesar Gómez</td>
+                        <td>Almacén</td>
+                        <td><span class="status-badge inactive">Bloqueado</span></td>
+                        <td>
+                            <a href="usuario-editar.html" class="btn-action edit">Editar</a>
+                            <button class="btn-action delete" onclick="openModal('almacen01', 'Cesar Gómez')">Eliminar</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>gerente01</td>
+                        <td>Irving Abundis</td>
+                        <td>Gerente</td>
+                        <td><span class="status-badge active">Activo</span></td>
+                        <td>
+                            <a href="usuario-editar.html" class="btn-action edit">Editar</a>
+                            <button class="btn-action delete" onclick="openModal('gerente01', 'Irving Abundis')">Eliminar</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="pagination-container">
+                <span>Página 1 de 1</span>
+                <div class="pagination-buttons">
+                    <button disabled>&laquo; Anterior</button>
+                    <button disabled>Siguiente &raquo;</button>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <div id="deleteModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h3>Confirmar Eliminación (MOD-02-PANTALLA-04)</h3>
+            <p>¿Está seguro de que desea eliminar permanentemente a este usuario? Esta acción es irreversible.</p>
+            
+            <div class="user-delete-info">
+                <strong>ID de Usuario:</strong> <span id="modalUserId"></span><br>
+                <strong>Nombre:</strong> <span id="modalUserName"></span>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-secondary" onclick="closeModal()">Cancelar</button>
+                <a href="usuarios.html" class="btn-logout">Confirmar Eliminación</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Referencias a los elementos del modal
+        const modal = document.getElementById('deleteModal');
+        const modalUserId = document.getElementById('modalUserId');
+        const modalUserName = document.getElementById('modalUserName');
+
+        // Función para ABRIR el modal
+        function openModal(userId, userName) {
+            // Ponemos los datos del usuario en el modal
+            modalUserId.textContent = userId;
+            modalUserName.textContent = userName;
+            // Mostramos el modal
+            modal.style.display = 'flex';
+        }
+
+        // Función para CERRAR el modal
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // Cierra el modal si el usuario hace clic fuera de la ventana
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+
+</body>
+</html>

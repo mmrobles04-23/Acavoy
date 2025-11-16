@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Usuario - Aca Voy!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dashboard-body">
+
+    <header class="dashboard-header">
+        <div class="header-logo">
+            <img src="logo.jpeg" alt="Logo Aca Voy!" class="logo-small">
+            <span>Aca Voy!</span>
+        </div>
+        <div class="header-user">
+            <span>Bienvenida, Miri (Administrador)</span>
+            <a href="login.html" class="btn-logout">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <div class="dashboard-main-container">
+
+        <nav class="dashboard-sidebar">
+            <h3>Módulos</h3>
+            <ul>
+                <li><a href="dashboard.html">Dashboard (Inicio)</a></li>
+                <li class="active"><a href="usuarios.html">Gestión de Usuarios</a></li>
+                <li><a href="#">Reportes y Analítica</a></li>
+                <li><a href="#">Ventas</a></li>
+                <li><a href="#">Gestión de Clientes</a></li>
+                <li><a href="#">Inventario</a></li>
+                <li><a href="#">Auditoría y Bitácoras</a></li>
+            </ul>
+        </nav>
+
+        <main class="dashboard-content">
+            <a href="usuarios.html" class="breadcrumb-link">&larr; Volver a la lista de usuarios</a>
+            
+            <h1>Crear Nuevo Usuario (MOD-02-PANTALLA-02)</h1>
+            <p>Completa los campos para registrar un nuevo usuario en el sistema.</p>
+
+            <div class="form-page-container">
+                <form class="form-layout" action="usuarios.html">
+                    
+                    <div class="form-group">
+                        <label for="user-id">ID de Usuario</label>
+                        <input type="text" id="user-id" placeholder="ej. mrobles" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="full-name">Nombre completo</label>
+                        <input type="text" id="full-name" placeholder="ej. Miriam Robles" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" placeholder="ej. mrobles@correo.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Contraseña temporal</label>
+                        <input type="password" id="password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Rol asignado</label>
+                        <select id="role" required>
+                            <option value="" disabled selected>-- Selecciona un rol --</option>
+                            <option value="vendedor">Vendedor</option>
+                            <option value="almacen">Almacén</option>
+                            <option value="gerente">Gerente</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Guardar Usuario</button>
+                        <a href="usuarios.html" class="btn-secondary">Cancelar</a>
+                    </div>
+
+                </form>
+            </div>
+            
+        </main>
+
+    </div>
+
+</body>
+</html>
