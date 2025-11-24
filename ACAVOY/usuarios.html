@@ -30,7 +30,7 @@
                 <li><a href="#">Ventas</a></li>
                 <li><a href="#">Gestión de Clientes</a></li>
                 <li><a href="#">Inventario</a></li>
-                <li><a href="#">Auditoría y Bitácoras</a></li>
+                <li><a href="auditoria.html">Auditoría y Bitácoras</a></li>
             </ul>
         </nav>
 
@@ -127,30 +127,22 @@
     </div>
 
     <script>
-        // Referencias a los elementos del modal
         const modal = document.getElementById('deleteModal');
         const modalUserId = document.getElementById('modalUserId');
         const modalUserName = document.getElementById('modalUserName');
 
-        // Función para ABRIR el modal
         function openModal(userId, userName) {
-            // Ponemos los datos del usuario en el modal
             modalUserId.textContent = userId;
             modalUserName.textContent = userName;
-            // Mostramos el modal
             modal.style.display = 'flex';
         }
 
-        // Función para CERRAR el modal
         function closeModal() {
             modal.style.display = 'none';
         }
 
-        // Cierra el modal si el usuario hace clic fuera de la ventana
         window.onclick = function(event) {
-            if (event.target == modal) {
-                closeModal();
-            }
+            if (event.target == modal) closeModal();
         }
     </script>
 
