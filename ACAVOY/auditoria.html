@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoría y Bitácoras - Aca Voy!</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dashboard-body">
+
+<header class="dashboard-header">
+    <div class="header-logo">
+        <img src="logo.jpeg" alt="Logo Aca Voy!" class="logo-small">
+        <span>Aca Voy!</span>
+    </div>
+    <div class="header-user">
+        <span>Bienvenida, Miri (Administrador)</span>
+        <a href="login.html" class="btn-logout">Cerrar Sesión</a>
+    </div>
+</header>
+
+<div class="dashboard-main-container">
+
+<nav class="dashboard-sidebar">
+    <h3>Módulos</h3>
+    <ul>
+        <li><a href="dashboard.html">Dashboard (Inicio)</a></li>
+        <li><a href="usuarios.html">Gestión de Usuarios</a></li>
+        <li><a href="#">Reportes y Analítica</a></li>
+        <li><a href="#">Ventas</a></li>
+        <li><a href="#">Gestión de Clientes</a></li>
+        <li><a href="#">Inventario</a></li>
+        <li class="active"><a href="auditoria.html">Auditoría y Bitácoras</a></li>
+    </ul>
+</nav>
+
+<main class="dashboard-content">
+    <h1>Bitácora de Auditoría</h1>
+    <p>Consulta y análisis detallado de todos los eventos y operaciones registradas por el sistema.</p>
+
+    <div class="action-bar">
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <div class="form-group">
+                <label for="filter-event">Tipo de Evento:</label>
+                <select id="filter-event" class="search-bar" style="width: 200px;">
+                    <option value="all">Todos</option>
+                    <option value="login">Inicio/Cierre de Sesión</option>
+                    <option value="user-crud">Administración de Usuarios</option>
+                    <option value="sales">Ventas</option>
+                    <option value="security">Fallo de Seguridad</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="filter-user">Usuario:</label>
+                <input type="text" id="filter-user" class="search-bar" placeholder="ID o Nombre de Usuario">
+            </div>
+
+            <div class="form-group">
+                <label for="filter-date-start">Rango de Fechas:</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="date" id="filter-date-start" class="search-bar" style="width: 150px;">
+                    <input type="date" id="filter-date-end" class="search-bar" style="width: 150px;">
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-primary" style="background-color: #28a745;">
+            <i class="fas fa-file-excel"></i> Exportar a Excel
+        </button>
+    </div>
+
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>Fecha y Hora</th>
+                <th>Módulo</th>
+                <th>Acción</th>
+                <th>Usuario</th>
+                <th>Resultado</th>
+            </tr>
+        </thead>
+        <tbody id="tabla-registros">
+            <tr>
+                <td>2025-11-24 11:59:00</td>
+                <td>login</td>
+                <td>Inicio de Sesión</td>
+                <td>Admin_Miri</td>
+                <td><span class="status-badge active">Éxito</span></td>
+            </tr>
+            <tr>
+                <td>2025-11-24 11:58:30</td>
+                <td>user-crud</td>
+                <td>Creación de Usuario: Vendedor_03</td>
+                <td>Admin_Miri</td>
+                <td><span class="status-badge active">Éxito</span></td>
+            </tr>
+            <tr>
+                <td>2025-11-24 11:57:05</td>
+                <td>login</td>
+                <td>Intento de Login Fallido</td>
+                <td>Vendedor_Fabian</td>
+                <td><span class="status-badge inactive">Fallo</span></td>
+            </tr>
+            <tr>
+                <td>2025-11-24 11:50:15</td>
+                <td>sales</td>
+                <td>Registro de Venta #10023</td>
+                <td>Vendedor_Fabian</td>
+                <td><span class="status-badge active">Éxito</span></td>
+            </tr>
+            <tr>
+                <td>2025-11-24 10:30:40</td>
+                <td>security</td>
+                <td>Ajuste de Stock: Producto P-45</td>
+                <td>Jefe_Almacen</td>
+                <td><span class="status-badge active">Éxito</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination-container">
+        <div id="info-registros"></div>
+        <div class="pagination-buttons"></div>
+    </div>
+
+</main>
+
+</div>
+
+<script>
+const registrosOriginales = [];
+document.querySelectorAll("#tabla-registros tr").forEach(fila => {
+    const celdas = fila.querySelectorAll("td");
+    registrosOriginales.push({
+        fecha: celdas[0].textContent.trim(),
+        modulo: celdas[1].textContent.trim(),
+        accion: celdas[2].textContent.trim(),
+        usuario: celdas[3].textContent.trim(),
+        resultado: celdas[4].textContent.trim()
+    });
+});
+
+let paginaActual = 1;
+const registrosPorPagina = 5;
+
+function filtrarRegistros() {
+    let tipoEvento = document.getElementById("filter-event").value;
+    let usuarioFiltro = document.getElementById("filter-user").value.toLowerCase();
+    let fechaInicio = document.getElementById("filter-date-start").value;
+    let fechaFin = document.getElementById("filter-date-end").value;
+
+    return registrosOriginales.filter(reg => {
+        let coincideTipo =
+            tipoEvento === "all" ||
+            reg.modulo.toLowerCase().includes(tipoEvento.toLowerCase());
+
+        let coincideUsuario =
+            usuarioFiltro === "" ||
+            reg.usuario.toLowerCase().includes(usuarioFiltro);
+
+        let coincideFecha = true;
+
+        if (fechaInicio) {
+            let d1 = new Date(fechaInicio);
+            let df = new Date(reg.fecha);
+            if (df < d1) coincideFecha = false;
+        }
+
+        if (fechaFin) {
+            let d2 = new Date(fechaFin);
+            d2.setHours(23, 59, 59);
+            let df = new Date(reg.fecha);
+            if (df > d2) coincideFecha = false;
+        }
+
+        return coincideTipo && coincideUsuario && coincideFecha;
+    });
+}
+
+function mostrarRegistros() {
+    const tabla = document.getElementById("tabla-registros");
+    tabla.innerHTML = "";
+
+    const filtrados = filtrarRegistros();
+
+    const inicio = (paginaActual - 1) * registrosPorPagina;
+    const paginados = filtrados.slice(inicio, inicio + registrosPorPagina);
+
+    paginados.forEach(reg => {
+        tabla.innerHTML += `
+            <tr>
+                <td>${reg.fecha}</td>
+                <td>${reg.modulo}</td>
+                <td>${reg.accion}</td>
+                <td>${reg.usuario}</td>
+                <td>
+                    <span class="status-badge ${reg.resultado === "Éxito" ? "active" : "inactive"}">
+                        ${reg.resultado}
+                    </span>
+                </td>
+            </tr>`;
+    });
+
+    actualizarPaginacion(filtrados.length);
+}
+
+function actualizarPaginacion(totalRegistros) {
+    const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
+    const contenedor = document.querySelector(".pagination-buttons");
+    const info = document.getElementById("info-registros");
+
+    contenedor.innerHTML = `
+        <button ${paginaActual === 1 ? "disabled" : ""} onclick="cambiarPagina(-1)">
+            &laquo; Anterior
+        </button>
+        <button disabled> Página ${paginaActual} de ${totalPaginas} </button>
+        <button ${paginaActual === totalPaginas ? "disabled" : ""} onclick="cambiarPagina(1)">
+            Siguiente &raquo;
+        </button>
+    `;
+
+    info.textContent = `Mostrando ${((paginaActual - 1) * registrosPorPagina) + 1} a 
+    ${Math.min(paginaActual * registrosPorPagina, totalRegistros)} de ${totalRegistros} registros`;
+}
+
+function cambiarPagina(dir) {
+    paginaActual += dir;
+    mostrarRegistros();
+}
+
+document.getElementById("filter-event").addEventListener("change", reiniciar);
+document.getElementById("filter-user").addEventListener("input", reiniciar);
+document.getElementById("filter-date-start").addEventListener("change", reiniciar);
+document.getElementById("filter-date-end").addEventListener("change", reiniciar);
+
+function reiniciar() {
+    paginaActual = 1;
+    mostrarRegistros();
+}
+
+mostrarRegistros();
+</script>
+
+<!--
+   /\_/\
+  (= ._.)
+  / >  \>
+-->
+
+</body>
+</html>
