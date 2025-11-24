@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Venta - Aca Voy!</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ventas-styles.css">
+</head>
+<body class="dashboard-body">
+
+    <header class="dashboard-header">
+        <div class="header-logo">
+            <img src="logo.jpeg" alt="Logo Aca Voy!" class="logo-small">
+            <span>Aca Voy!</span>
+        </div>
+        <div class="header-user">
+            <span>Bienvenida, Miri (Administrador)</span>
+            <a href="login.html" class="btn-logout">Cerrar Sesión</a>
+        </div>
+    </header>
+
+    <div class="dashboard-main-container">
+
+        <nav class="dashboard-sidebar">
+            <h3>Módulos</h3>
+            <ul>
+                <li><a href="dashboard.html">Dashboard (Inicio)</a></li>
+                <li><a href="usuarios.html">Gestión de Usuarios</a></li>
+                <li><a href="#">Reportes y Analítica</a></li>
+                <li class="active"><a href="ventas.html">Ventas</a></li>
+                <li><a href="#">Gestión de Clientes</a></li>
+                <li><a href="#">Inventario</a></li>
+                <li><a href="#">Auditoría y Bitácoras</a></li>
+            </ul>
+        </nav>
+
+        <main class="dashboard-content">
+            <a href="dashboard.html" class="breadcrumb-link">&larr; Volver al Dashboard</a>
+            
+            <h1>Registrar Nueva Venta (MOD-04-PANTALLA-01)</h1>
+            <p>Selecciona el cliente, agrega vehículos al carrito y aplica promociones disponibles.</p>
+
+            <div class="venta-container">
+                
+                <!-- SECCIÓN IZQUIERDA: Cliente y Productos -->
+                <div>
+                    <!-- Selección de Cliente -->
+                    <div class="venta-section">
+                        <h3>1. Seleccionar Cliente</h3>
+                        <div class="form-group">
+                            <label for="buscar-cliente">Buscar Cliente</label>
+                            <input type="text" id="buscar-cliente" placeholder="Ingresa nombre, RFC o teléfono...">
+                        </div>
+                        
+                        <div id="cliente-info" class="cliente-info" style="display: none;">
+                            <p><strong>Cliente:</strong> <span id="cliente-nombre">Juan Pérez García</span></p>
+                            <p><strong>RFC:</strong> <span id="cliente-rfc">PEGJ850101ABC</span></p>
+                            <p><strong>Teléfono:</strong> <span id="cliente-telefono">55-1234-5678</span></p>
+                            <button class="btn-add" onclick="ClienteModule.cambiar()">Cambiar Cliente</button>
+                        </div>
+                        
+                        <button id="btn-seleccionar-cliente" class="btn-add" style="width: 100%; margin-top: 10px;" onclick="ClienteModule.seleccionar()">Seleccionar Cliente</button>
+                    </div>
+
+                    <!-- Catálogo de Vehículos -->
+                    <div class="venta-section" style="margin-top: 20px;">
+                        <h3>2. Catálogo de Vehículos</h3>
+                        
+                        <div class="form-group">
+                            <label for="filtro-vehiculo">Filtrar por modelo o marca</label>
+                            <input type="text" id="filtro-vehiculo" placeholder="Buscar vehículo...">
+                        </div>
+
+                        <div id="catalogo-vehiculos">
+                            <div class="producto-item">
+                                <div>
+                                    <div class="nombre">Nissan Versa 2024</div>
+                                    <div style="font-size: 12px; color: #7f8c8d;">Sedán • 4 puertas • Automático</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div class="precio">$289,900</div>
+                                    <button class="btn-add" onclick="CarritoModule.agregar('Nissan Versa 2024', 'Sedán', 289900)">Agregar</button>
+                                </div>
+                            </div>
+
+                            <div class="producto-item">
+                                <div>
+                                    <div class="nombre">Toyota Corolla 2024</div>
+                                    <div style="font-size: 12px; color: #7f8c8d;">Sedán • 4 puertas • Automático</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div class="precio">$389,900</div>
+                                    <button class="btn-add" onclick="CarritoModule.agregar('Toyota Corolla 2024', 'Sedán', 389900)">Agregar</button>
+                                </div>
+                            </div>
+
+                            <div class="producto-item">
+                                <div>
+                                    <div class="nombre">Honda CR-V 2024</div>
+                                    <div style="font-size: 12px; color: #7f8c8d;">SUV • 5 puertas • Automático</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div class="precio">$549,900</div>
+                                    <button class="btn-add" onclick="CarritoModule.agregar('Honda CR-V 2024', 'SUV', 549900)">Agregar</button>
+                                </div>
+                            </div>
+
+                            <div class="producto-item">
+                                <div>
+                                    <div class="nombre">Mazda CX-5 2024</div>
+                                    <div style="font-size: 12px; color: #7f8c8d;">SUV • 5 puertas • Automático</div>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div class="precio">$489,900</div>
+                                    <button class="btn-add" onclick="CarritoModule.agregar('Mazda CX-5 2024', 'SUV', 489900)">Agregar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN DERECHA: Carrito, Promociones y Resumen -->
+                <div>
+                    <!-- Carrito de Venta -->
+                    <div class="venta-section">
+                        <h3>3. Carrito de Venta</h3>
+                        
+                        <div id="carrito-contenido">
+                            <div class="carrito-vacio">
+                                <p>🛒 El carrito está vacío</p>
+                                <p style="font-size: 12px;">Agrega vehículos del catálogo</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Promociones -->
+                    <div class="venta-section" style="margin-top: 20px;">
+                        <h3>4. Aplicar Promociones</h3>
+                        
+                        <div id="promociones-disponibles">
+                            <div class="promocion-item">
+                                <input type="checkbox" id="promo1" onchange="CalculosModule.calcularTotal()">
+                                <label for="promo1">
+                                    <div><strong>Descuento Cliente Frecuente</strong></div>
+                                    <div class="promocion-detalle">5% de descuento en compra total</div>
+                                </label>
+                            </div>
+
+                            <div class="promocion-item">
+                                <input type="checkbox" id="promo2" onchange="CalculosModule.calcularTotal()">
+                                <label for="promo2">
+                                    <div><strong>Promoción Fin de Año</strong></div>
+                                    <div class="promocion-detalle">$20,000 de descuento directo</div>
+                                </label>
+                            </div>
+
+                            <div class="promocion-item">
+                                <input type="checkbox" id="promo3" onchange="CalculosModule.calcularTotal()">
+                                <label for="promo3">
+                                    <div><strong>Seguro Gratis 1 Año</strong></div>
+                                    <div class="promocion-detalle">Sin costo en el total</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Método de Pago -->
+                    <div class="venta-section" style="margin-top: 20px;">
+                        <h3>5. Método de Pago</h3>
+                        <div class="metodo-pago">
+                            <label>
+                                <input type="radio" name="metodo-pago" value="contado" checked>
+                                <span>Contado</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="metodo-pago" value="credito">
+                                <span>Crédito</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="metodo-pago" value="financiamiento">
+                                <span>Financiamiento</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Resumen de Venta -->
+                    <div class="resumen-venta">
+                        <h3 style="margin-top: 0;">Resumen de Venta</h3>
+                        <div class="resumen-linea">
+                            <span>Subtotal:</span>
+                            <span id="resumen-subtotal">$0.00</span>
+                        </div>
+                        <div class="resumen-linea descuento">
+                            <span>Descuentos aplicados:</span>
+                            <span id="resumen-descuento">$0.00</span>
+                        </div>
+                        <div class="resumen-linea total">
+                            <span>TOTAL A PAGAR:</span>
+                            <span id="resumen-total">$0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="form-actions-venta">
+                        <a href="dashboard.html" class="btn-cancelar">Cancelar</a>
+                        <button id="btn-confirmar-venta" class="btn-confirmar" onclick="VentaModule.confirmar()" disabled>Confirmar Venta</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>✓ Venta Confirmada</h3>
+            <p>La venta ha sido registrada exitosamente en el sistema.</p>
+            
+            <div class="modal-resumen">
+                <p><strong>Cliente:</strong> <span id="modal-cliente"></span></p>
+                <p><strong>Vehículos:</strong> <span id="modal-vehiculos"></span></p>
+                <p><strong>Total:</strong> <span id="modal-total" style="font-size: 18px; color: #27ae60; font-weight: bold;"></span></p>
+                <p><strong>Folio:</strong> <span id="modal-folio"></span></p>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-add" style="flex: 1; padding: 12px;" onclick="ModalModule.cerrar()">Cerrar</button>
+                <a href="dashboard.html" class="btn-confirmar" style="flex: 1; padding: 12px; text-align: center; text-decoration: none;">Ir al Dashboard</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts modulares -->
+    <script src="ventas-data.js"></script>
+    <script src="ventas-cliente.js"></script>
+    <script src="ventas-carrito.js"></script>
+    <script src="ventas-calculos.js"></script>
+    <script src="ventas-confirmacion.js"></script>
+    <script src="ventas-modal.js"></script>
+
+</body>
+</html>

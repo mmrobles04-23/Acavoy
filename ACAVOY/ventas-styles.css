@@ -1,0 +1,355 @@
+/* ============================================
+   ESTILOS PARA MÓDULO DE VENTAS
+   ============================================ */
+
+.venta-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.venta-section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.venta-section h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* Formularios */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #34495e;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Cliente */
+.cliente-info {
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.cliente-info p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+/* Productos */
+.producto-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background: #f8f9fa;
+}
+
+.producto-item .nombre {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.producto-item .precio {
+    color: #27ae60;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.btn-add {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-add:hover {
+    background: #2980b9;
+}
+
+/* Carrito */
+.carrito-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.carrito-item:last-child {
+    border-bottom: none;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-details .nombre {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.item-details .modelo {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+.item-cantidad {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.item-cantidad button {
+    background: #95a5a6;
+    color: white;
+    border: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.item-cantidad button:hover {
+    background: #7f8c8d;
+}
+
+.item-cantidad span {
+    min-width: 30px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.btn-remove {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-remove:hover {
+    background: #c0392b;
+}
+
+.carrito-vacio {
+    text-align: center;
+    padding: 40px;
+    color: #95a5a6;
+}
+
+/* Promociones */
+.promocion-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.promocion-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+}
+
+.promocion-item label {
+    flex: 1;
+    cursor: pointer;
+    margin: 0;
+}
+
+.promocion-detalle {
+    font-size: 12px;
+    color: #7f8c8d;
+}
+
+/* Resumen */
+.resumen-venta {
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
+.resumen-linea {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.resumen-linea.total {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    padding-top: 10px;
+    border-top: 2px solid #bdc3c7;
+}
+
+.resumen-linea.descuento {
+    color: #27ae60;
+}
+
+/* Método de pago */
+.metodo-pago {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.metodo-pago label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.metodo-pago input[type="radio"] {
+    width: 18px;
+    height: 18px;
+}
+
+.metodo-pago label:hover {
+    border-color: #3498db;
+    background: #ecf0f1;
+}
+
+.metodo-pago input[type="radio"]:checked + span {
+    font-weight: 600;
+}
+
+/* Botones de acción */
+.form-actions-venta {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-confirmar {
+    flex: 1;
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.btn-confirmar:hover {
+    background: #229954;
+}
+
+.btn-confirmar:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
+}
+
+.btn-cancelar {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-cancelar:hover {
+    background: #c0392b;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    color: #27ae60;
+}
+
+.modal-resumen {
+    background: #ecf0f1;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 15px 0;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .venta-container {
+        grid-template-columns: 1fr;
+    }
+
+    .metodo-pago {
+        grid-template-columns: 1fr;
+    }
+}
