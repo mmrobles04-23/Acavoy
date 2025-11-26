@@ -1,39 +1,57 @@
 const ModalModule = {
     
     /**
-     * Muestra el modal con los datos de la venta confirmada
+     * Muestra el modal con los datos de la venta
      */
-    mostrar: function(cliente, vehiculos, total, folio) {
-        const modal = document.getElementById('confirmModal');
+    mostrar: function(ventaData) {
+        const formatearMoneda = (valor) => {
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN'
+            }).format(valor);
+        };
         
-        // Llenar los datos en el modal
-        document.getElementById('modal-cliente').textContent = cliente;
-        document.getElementById('modal-vehiculos').textContent = vehiculos;
-        document.getElementById('modal-total').textContent = total;
-        document.getElementById('modal-folio').textContent = folio;
+        // Obtener datos actuales de la interfaz
+        const cliente = $('#cliente-nombre').text();
+        const vehiculos = this.obtenerListaVehiculos();
+        
+        // Llenar el modal
+        $('#modal-cliente').text(cliente);
+        $('#modal-vehiculos').text(vehiculos);
+        $('#modal-total').text(formatearMoneda(ventaData.total));
+        $('#modal-folio').text(ventaData.folio);
         
         // Mostrar el modal
-        modal.style.display = 'flex';
+        $('#confirmModal').css('display', 'flex');
     },
     
     /**
-     * Cierra el modal y resetea el formulario
+     * Cierra el modal
      */
     cerrar: function() {
-        const modal = document.getElementById('confirmModal');
+        $('#confirmModal').hide();
         
-        // Ocultar el modal
-        modal.style.display = 'none';
-        
-        // Resetear todo el formulario de venta
-        VentaModule.resetear();
+        // Recargar la página para limpiar todo
+        window.location.href = '/Ventas/Index';
+    },
+    
+    /**
+     * Obtiene la lista de vehículos del carrito
+     */
+    obtenerListaVehiculos: function() {
+        const items = [];
+        $('.carrito-item').each(function() {
+            const nombre = $(this).find('.nombre').text();
+            const cantidad = $(this).find('.item-cantidad span').text();
+            items.push(`${cantidad}x ${nombre}`);
+        });
+        return items.join(', ');
     }
 };
 
-// Cerrar el modal si el usuario hace clic fuera de la ventana
-window.onclick = function(event) {
-    const modal = document.getElementById('confirmModal');
-    if (event.target == modal) {
+// Cerrar modal al hacer clic fuera
+$(window).on('click', function(event) {
+    if ($(event.target).is('#confirmModal')) {
         ModalModule.cerrar();
     }
-}
+});
