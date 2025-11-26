@@ -1,77 +1,40 @@
 const CalculosModule = {
     
     /**
-     * Calcula el subtotal de todos los items en el carrito
+     * Aplica o quita una promoción
      */
-    calcularSubtotal: function() {
-        let subtotal = 0;
-        
-        carrito.forEach(item => {
-            subtotal += item.precio * item.cantidad;
+    aplicarPromocion: function(promocionId, aplicar) {
+        $.ajax({
+            url: '/Ventas/AplicarPromocion',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ promocionId: promocionId, aplicar: aplicar }),
+            success: (response) => {
+                if (response.exito) {
+                    this.actualizarTotales(response.totales);
+                } else {
+                    alert(response.mensaje || 'Error al aplicar promoción');
+                }
+            },
+            error: (xhr, status, error) => {
+                alert('Error al aplicar promoción: ' + error);
+            }
         });
-        
-        return subtotal;
     },
     
     /**
-     * Calcula los descuentos aplicados según las promociones seleccionadas
+     * Actualiza los totales en la interfaz
      */
-    calcularDescuentos: function(subtotal) {
-        let descuento = 0;
+    actualizarTotales: function(totales) {
+        const formatearMoneda = (valor) => {
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN'
+            }).format(valor);
+        };
         
-        // Promoción 1: Descuento del 5%
-        if (document.getElementById('promo1').checked) {
-            descuento += subtotal * 0.05;
-        }
-        
-        // Promoción 2: Descuento fijo de $20,000
-        if (document.getElementById('promo2').checked) {
-            descuento += 20000;
-        }
-        
-        // Promoción 3: Seguro gratis (no afecta el total monetario)
-        // Solo es un beneficio adicional
-        
-        return descuento;
-    },
-    
-    /**
-     * Calcula y actualiza todos los totales en la interfaz
-     */
-    calcularTotal: function() {
-        // Calcular subtotal
-        const subtotal = this.calcularSubtotal();
-        
-        // Calcular descuentos
-        const descuento = this.calcularDescuentos(subtotal);
-        
-        // Calcular total final
-        const total = subtotal - descuento;
-        
-        // Actualizar la interfaz
-        this.actualizarInterfaz(subtotal, descuento, total);
-    },
-    
-    /**
-     * Actualiza los valores en la interfaz
-     */
-    actualizarInterfaz: function(subtotal, descuento, total) {
-        document.getElementById('resumen-subtotal').textContent = 
-            '$' + subtotal.toLocaleString('es-MX', {minimumFractionDigits: 2});
-        
-        document.getElementById('resumen-descuento').textContent = 
-            '-$' + descuento.toLocaleString('es-MX', {minimumFractionDigits: 2});
-        
-        document.getElementById('resumen-total').textContent = 
-            '$' + total.toLocaleString('es-MX', {minimumFractionDigits: 2});
-    },
-    
-    /**
-     * Obtiene el total actual (útil para otras funciones)
-     */
-    obtenerTotal: function() {
-        const subtotal = this.calcularSubtotal();
-        const descuento = this.calcularDescuentos(subtotal);
-        return subtotal - descuento;
+        $('#resumen-subtotal').text(formatearMoneda(totales.subtotal));
+        $('#resumen-descuento').text('-' + formatearMoneda(totales.descuento));
+        $('#resumen-total').text(formatearMoneda(totales.total));
     }
 };
