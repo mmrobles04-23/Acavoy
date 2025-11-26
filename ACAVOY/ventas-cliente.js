@@ -1,66 +1,84 @@
 const ClienteModule = {
     
     /**
-     * Selecciona un cliente basado en la búsqueda
+     * Selecciona un cliente mediante búsqueda
      */
     seleccionar: function() {
-        const busqueda = document.getElementById('buscar-cliente').value;
+        const busqueda = $('#buscar-cliente').val();
         
-        // Validar que hay algo en el campo de búsqueda
-        if (busqueda.trim() === '') {
+        if (!busqueda || busqueda.trim() === '') {
             alert('Por favor ingresa un nombre, RFC o teléfono para buscar');
             return;
         }
         
-        // Simular búsqueda de cliente (en producción sería una llamada a API)
-        clienteActual = {
-            nombre: 'Juan Pérez García',
-            rfc: 'PEGJ850101ABC',
-            telefono: '55-1234-5678'
-        };
+        // Mostrar loader (opcional)
+        this.mostrarLoader(true);
         
-        // Actualizar la interfaz
-        this.mostrarInformacion();
-        
-        // Marcar que ya hay un cliente seleccionado
-        clienteSeleccionado = true;
-        
-        // Actualizar el botón de confirmar venta
-        VentaModule.actualizarBotonConfirmar();
+        // Llamada AJAX al servidor
+        $.ajax({
+            url: '/Ventas/BuscarCliente',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ termino: busqueda }),
+            success: (response) => {
+                this.mostrarLoader(false);
+                
+                if (response.exito) {
+                    this.mostrarInformacion(response.cliente);
+                    VentaModule.actualizarBotonConfirmar();
+                } else {
+                    alert(response.mensaje || 'No se encontró el cliente');
+                }
+            },
+            error: (xhr, status, error) => {
+                this.mostrarLoader(false);
+                alert('Error al buscar cliente: ' + error);
+            }
+        });
     },
     
     /**
-     * Muestra la información del cliente seleccionado
+     * Muestra la información del cliente
      */
-    mostrarInformacion: function() {
-        document.getElementById('cliente-nombre').textContent = clienteActual.nombre;
-        document.getElementById('cliente-rfc').textContent = clienteActual.rfc;
-        document.getElementById('cliente-telefono').textContent = clienteActual.telefono;
+    mostrarInformacion: function(cliente) {
+        $('#cliente-nombre').text(cliente.nombre);
+        $('#cliente-rfc').text(cliente.rfc);
+        $('#cliente-telefono').text(cliente.telefono);
         
-        // Mostrar el panel de información
-        document.getElementById('cliente-info').style.display = 'block';
-        
-        // Ocultar el botón de seleccionar
-        document.getElementById('btn-seleccionar-cliente').style.display = 'none';
+        $('#cliente-info').show();
+        $('#btn-seleccionar-cliente').hide();
     },
     
     /**
      * Permite cambiar de cliente
      */
     cambiar: function() {
-        // Ocultar información del cliente
-        document.getElementById('cliente-info').style.display = 'none';
-        
-        // Mostrar el botón de seleccionar
-        document.getElementById('btn-seleccionar-cliente').style.display = 'block';
-        
-        // Limpiar el campo de búsqueda
-        document.getElementById('buscar-cliente').value = '';
-        
-        // Marcar que no hay cliente seleccionado
-        clienteSeleccionado = false;
-        
-        // Actualizar el botón de confirmar venta
-        VentaModule.actualizarBotonConfirmar();
+        $.ajax({
+            url: '/Ventas/CambiarCliente',
+            type: 'POST',
+            success: (response) => {
+                if (response.exito) {
+                    $('#cliente-info').hide();
+                    $('#btn-seleccionar-cliente').show();
+                    $('#buscar-cliente').val('');
+                    VentaModule.actualizarBotonConfirmar();
+                }
+            },
+            error: (xhr, status, error) => {
+                alert('Error al cambiar cliente: ' + error);
+            }
+        });
+    },
+    
+    /**
+     * Muestra u oculta el loader
+     */
+    mostrarLoader: function(mostrar) {
+        // Implementar un loader si es necesario
+        if (mostrar) {
+            $('#btn-seleccionar-cliente').prop('disabled', true).text('Buscando...');
+        } else {
+            $('#btn-seleccionar-cliente').prop('disabled', false).text('Seleccionar Cliente');
+        }
     }
 };
