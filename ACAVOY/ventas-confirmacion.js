@@ -1,81 +1,68 @@
 const VentaModule = {
     
     /**
-     * Valida que se cumplan las condiciones para confirmar la venta
-     */
-    validar: function() {
-        // Debe haber un cliente seleccionado
-        if (!clienteSeleccionado) {
-            alert('Debes seleccionar un cliente antes de confirmar la venta');
-            return false;
-        }
-        
-        // Debe haber al menos un vehículo en el carrito
-        if (carrito.length === 0) {
-            alert('Debes agregar al menos un vehículo al carrito');
-            return false;
-        }
-        
-        return true;
-    },
-    
-    /**
-     * Confirma la venta y muestra el modal de confirmación
+     * Confirma la venta
      */
     confirmar: function() {
-        // Validar antes de confirmar
-        if (!this.validar()) {
+        // Obtener el método de pago seleccionado
+        const metodoPago = parseInt($('input[name="metodo-pago"]:checked').val());
+        
+        // Confirmar con el usuario
+        if (!confirm('¿Deseas confirmar esta venta?')) {
             return;
         }
         
-        // Generar un folio único para la venta
-        const folio = 'V-' + Date.now();
+        // Mostrar loader
+        this.mostrarLoader(true);
         
-        // Obtener los datos necesarios
-        const cliente = clienteActual.nombre;
-        const total = document.getElementById('resumen-total').textContent;
+        // Preparar los datos
+        const request = {
+            metodoPago: metodoPago
+        };
         
-        // Crear lista de vehículos vendidos
-        const vehiculos = carrito.map(item => 
-            `${item.cantidad}x ${item.nombre}`
-        ).join(', ');
-        
-        // Mostrar el modal con la información
-        ModalModule.mostrar(cliente, vehiculos, total, folio);
-        
-        // Aquí se haría la llamada a la API para guardar la venta
-        // this.guardarEnServidor(folio, cliente, carrito, total);
+        // Llamada AJAX al servidor
+        $.ajax({
+            url: '/Ventas/Confirmar',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(request),
+            success: (response) => {
+                this.mostrarLoader(false);
+                
+                if (response.exito) {
+                    ModalModule.mostrar(response);
+                } else {
+                    alert(response.mensaje || 'Error al confirmar la venta');
+                }
+            },
+            error: (xhr, status, error) => {
+                this.mostrarLoader(false);
+                alert('Error al confirmar la venta: ' + error);
+            }
+        });
     },
     
     /**
-     * Actualiza el estado del botón de confirmar venta
+     * Actualiza el estado del botón de confirmar
      */
     actualizarBotonConfirmar: function() {
-        const btn = document.getElementById('btn-confirmar-venta');
+        const clienteSeleccionado = $('#cliente-info').is(':visible');
+        const carritoVacio = $('.carrito-vacio').length > 0;
         
-        // El botón solo está habilitado si hay cliente Y productos en el carrito
-        btn.disabled = !(clienteSeleccionado && carrito.length > 0);
+        const btn = $('#btn-confirmar-venta');
+        btn.prop('disabled', !clienteSeleccionado || carritoVacio);
     },
     
     /**
-     * Resetea todo el formulario de venta (después de confirmar)
+     * Muestra u oculta el loader
      */
-    resetear: function() {
-        // Vaciar el carrito
-        CarritoModule.vaciar();
-        
-        // Quitar cliente
-        ClienteModule.cambiar();
-        
-        // Desmarcar todas las promociones
-        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-            cb.checked = false;
-        });
-        
-        // Resetear método de pago a "contado"
-        document.querySelector('input[name="metodo-pago"][value="contado"]').checked = true;
-        
-        // Recalcular totales
-        CalculosModule.calcularTotal();
+    mostrarLoader: function(mostrar) {
+        const btn = $('#btn-confirmar-venta');
+        if (mostrar) {
+            btn.prop('disabled', true).text('Procesando...');
+        } else {
+            btn.text('Confirmar Venta');
+            this.actualizarBotonConfirmar();
+        }
     }
 };
