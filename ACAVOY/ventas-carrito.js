@@ -3,113 +3,130 @@ const CarritoModule = {
     /**
      * Agrega un vehículo al carrito
      */
-    agregar: function(nombre, modelo, precio) {
-        // Verificar si el vehículo ya existe en el carrito
-        const existe = carrito.find(item => item.nombre === nombre);
+    agregar: function(vehiculoId, nombre, modelo, precio) {
+        const item = {
+            vehiculoId: vehiculoId,
+            nombre: nombre,
+            modelo: modelo,
+            precio: precio
+        };
         
-        if (existe) {
-            // Si ya existe, incrementar la cantidad
-            existe.cantidad++;
-        } else {
-            // Si no existe, agregarlo como nuevo item
-            carrito.push({
-                nombre: nombre,
-                modelo: modelo,
-                precio: precio,
-                cantidad: 1
-            });
-        }
-        
-        // Actualizar la interfaz del carrito
-        this.renderizar();
-        
-        // Recalcular los totales
-        CalculosModule.calcularTotal();
-        
-        // Actualizar el botón de confirmar
-        VentaModule.actualizarBotonConfirmar();
+        $.ajax({
+            url: '/Ventas/AgregarAlCarrito',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(item),
+            success: (response) => {
+                if (response.exito) {
+                    this.renderizar(response.carrito);
+                    CalculosModule.actualizarTotales(response.totales);
+                    VentaModule.actualizarBotonConfirmar();
+                } else {
+                    alert(response.mensaje || 'Error al agregar al carrito');
+                }
+            },
+            error: (xhr, status, error) => {
+                alert('Error al agregar al carrito: ' + error);
+            }
+        });
     },
     
     /**
-     * Cambia la cantidad de un vehículo en el carrito
+     * Cambia la cantidad de un vehículo
      */
-    cambiarCantidad: function(nombre, delta) {
-        const item = carrito.find(i => i.nombre === nombre);
-        
-        if (item) {
-            item.cantidad += delta;
-            
-            // Si la cantidad es 0 o menos, eliminar el item
-            if (item.cantidad <= 0) {
-                this.eliminar(nombre);
-            } else {
-                this.renderizar();
-                CalculosModule.calcularTotal();
+    cambiarCantidad: function(vehiculoId, nuevaCantidad) {
+        $.ajax({
+            url: '/Ventas/CambiarCantidad',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ vehiculoId: vehiculoId, cantidad: nuevaCantidad }),
+            success: (response) => {
+                if (response.exito) {
+                    this.renderizar(response.carrito);
+                    CalculosModule.actualizarTotales(response.totales);
+                    VentaModule.actualizarBotonConfirmar();
+                } else {
+                    alert(response.mensaje || 'Error al cambiar cantidad');
+                }
+            },
+            error: (xhr, status, error) => {
+                alert('Error al cambiar cantidad: ' + error);
             }
-        }
+        });
     },
     
     /**
      * Elimina un vehículo del carrito
      */
-    eliminar: function(nombre) {
-        carrito = carrito.filter(item => item.nombre !== nombre);
-        this.renderizar();
-        CalculosModule.calcularTotal();
-        VentaModule.actualizarBotonConfirmar();
+    eliminar: function(vehiculoId) {
+        if (!confirm('¿Deseas eliminar este vehículo del carrito?')) {
+            return;
+        }
+        
+        $.ajax({
+            url: '/Ventas/EliminarDelCarrito',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ vehiculoId: vehiculoId }),
+            success: (response) => {
+                if (response.exito) {
+                    this.renderizar(response.carrito);
+                    CalculosModule.actualizarTotales(response.totales);
+                    VentaModule.actualizarBotonConfirmar();
+                } else {
+                    alert(response.mensaje || 'Error al eliminar del carrito');
+                }
+            },
+            error: (xhr, status, error) => {
+                alert('Error al eliminar del carrito: ' + error);
+            }
+        });
     },
     
     /**
-     * Renderiza (dibuja) el carrito en la interfaz
+     * Renderiza el carrito en la interfaz
      */
-    renderizar: function() {
-        const contenedor = document.getElementById('carrito-contenido');
+    renderizar: function(carrito) {
+        const contenedor = $('#carrito-contenido');
         
-        // Si el carrito está vacío, mostrar mensaje
-        if (carrito.length === 0) {
-            contenedor.innerHTML = `
+        if (!carrito || carrito.length === 0) {
+            contenedor.html(`
                 <div class="carrito-vacio">
                     <p>🛒 El carrito está vacío</p>
                     <p style="font-size: 12px;">Agrega vehículos del catálogo</p>
                 </div>
-            `;
+            `);
             return;
         }
         
-        // Construir el HTML de los items del carrito
         let html = '';
         carrito.forEach(item => {
+            const precioFormateado = new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN'
+            }).format(item.precio);
+            
             html += `
                 <div class="carrito-item">
                     <div class="item-details">
                         <div class="nombre">${item.nombre}</div>
                         <div class="modelo">${item.modelo}</div>
                         <div style="color: #27ae60; font-weight: 600; margin-top: 5px;">
-                            $${item.precio.toLocaleString()}
+                            ${precioFormateado}
                         </div>
                     </div>
                     <div class="item-cantidad">
-                        <button onclick="CarritoModule.cambiarCantidad('${item.nombre}', -1)">-</button>
+                        <button onclick="CarritoModule.cambiarCantidad(${item.vehiculoId}, ${item.cantidad - 1})">-</button>
                         <span>${item.cantidad}</span>
-                        <button onclick="CarritoModule.cambiarCantidad('${item.nombre}', 1)">+</button>
+                        <button onclick="CarritoModule.cambiarCantidad(${item.vehiculoId}, ${item.cantidad + 1})">+</button>
                     </div>
-                    <button class="btn-remove" onclick="CarritoModule.eliminar('${item.nombre}')">
+                    <button class="btn-remove" onclick="CarritoModule.eliminar(${item.vehiculoId})">
                         Eliminar
                     </button>
                 </div>
             `;
         });
         
-        contenedor.innerHTML = html;
-    },
-    
-    /**
-     * Vacía completamente el carrito
-     */
-    vaciar: function() {
-        carrito = [];
-        this.renderizar();
-        CalculosModule.calcularTotal();
-        VentaModule.actualizarBotonConfirmar();
+        contenedor.html(html);
     }
 };
